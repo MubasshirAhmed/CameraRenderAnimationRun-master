@@ -4,36 +4,40 @@ using UnityEngine;
 
 public class CameraAnimationController : MonoBehaviour
 {
-    private List<GameObject> inGameObjects = new List<GameObject>();
-    GameObject[] objectsList;
+    private List<GameObject> _inGameObjects = new List<GameObject>();
+    private GameObject[] _objectsList;
+    private Renderer[] _rend;
 
     private void Start()
     {
-        objectsList = GameObject.FindGameObjectsWithTag("AnimatedObject");
+        _objectsList = GameObject.FindGameObjectsWithTag("AnimatedObject");
+        for (int i = 0; i < _objectsList.Length; i++)
+        {
+            _rend[i] = _objectsList[i].GetComponent<Renderer>();
+        }
     }
 
     void Update()
     {
-
         FindObjectsByTag();
     }
 
     void FindObjectsByTag()
     {
-        inGameObjects.Clear();
-        for (int i = 0; i < objectsList.Length; i++)
+        _inGameObjects.Clear();
+        for (int i = 0; i < _objectsList.Length; i++)
         {
-            if (IsVisibleByTag(objectsList[i])/*objectsList[i].GetComponent<Renderer>().isVisible*/)
+            if (IsVisibleByTag(_objectsList[i])/*objectsList[i].GetComponent<Renderer>().isVisible*/)
             {
-                inGameObjects.Add(objectsList[i].transform.parent.gameObject);
-                objectsList[i].GetComponentInParent<Animator>().enabled = true;
+                _inGameObjects.Add(_objectsList[i].transform.parent.gameObject);
+                _objectsList[i].GetComponentInParent<Animator>().enabled = true;
             }
             else
-                objectsList[i].GetComponentInParent<Animator>().enabled = false;
+                _objectsList[i].GetComponentInParent<Animator>().enabled = false;
         }
         // debug console
-        string result = "Total TagObj = " + objectsList.Length + ".  Visible Renderers = " + inGameObjects.Count;
-        foreach (GameObject go in inGameObjects)
+        string result = "Total TagObj = " + _objectsList.Length + ".  Visible Renderers = " + _inGameObjects.Count;
+        foreach (GameObject go in _inGameObjects)
             result += "\n " + go.name;
 
         Debug.Log(result);
